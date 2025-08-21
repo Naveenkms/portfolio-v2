@@ -6,6 +6,7 @@ interface Props {
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   class?: string;
+  target?: '_blank' | '_self' | '_parent' | '_top';
 }
 
 const {
@@ -26,7 +27,7 @@ const sizes: Record<string, string> = {
   md: 'px-4 py-2.5 text-base',
   lg: 'px-5 py-3 text-lg',
 };
-const variants: Record<string, string> = {
+export const variants: Record<string, string> = {
   primary: 'text-white !text-white hover:!text-white focus:!text-white active:!text-white bg-[var(--primary)] hover:opacity-90 shadow-sm',
   secondary: 'text-[var(--accent)] border border-[var(--accent)] bg-transparent hover:bg-[color:var(--color-accent-bg)]',
   ghost: 'text-[color:var(--color-text-secondary)] bg-transparent hover:bg-[var(--accent)]/10',
@@ -37,7 +38,7 @@ const classes = [base, sizes[size], variants[variant], className].filter(Boolean
 ---
 
 <Tag
-  class={classes}
+  class={classes} 
   href={href}
   type={!href ? type : undefined}
   aria-disabled={disabled ? 'true' : undefined}

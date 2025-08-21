@@ -1,0 +1,32 @@
+---
+import PostMeta from "../ui/meta/PostMeta.astro";
+import ShareButtons from "../ui/share/ShareButtons.astro";
+---
+
+<section class="w-full py-8">
+  <div class="mx-auto max-w-5xl md:px-4">
+    <ShareButtons title={"title"} url={"url"} />
+    <PostMeta
+      pubDate={new Date()}
+      authorName={"Naveen Krishna"}
+      readingTimeMin={0}
+    />
+    <p>
+      Hey! I'm a software developer who loves developing applications that feel
+      great to use.
+    </p>
+    <p>
+      I work across the stack with TypeScript, Node.js, React/Next.js,
+      TailwindCSS, Express.js, Mongoose, Drizzle and MonogoDB. I care deeply
+      about readable code, strong tests, and observability. My approach: start
+      slow by establishing a strong foundation—folder structure, design system,
+      and base architecture—so development later is faster, smoother, and less
+      prone to bugs.
+    </p>
+    <p>
+      Outside of feature work, I enjoy collaborating, solving problems, and
+      building design‑system components that make teams faster. Always
+      learning—and always happy to collaborate on meaningful problems.
+    </p>
+  </div>
+</section>
