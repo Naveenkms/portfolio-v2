@@ -1,0 +1,39 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/sections/Header.astro";
+import Footer from "../../components/sections/Footer.astro";
+import HeroSection from "../../components/sections/HeroSection.astro";
+import { projects } from "../../data/projects";
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { id: project.id.toString() },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<html lang="en" data-theme="dark" class="dark">
+  <head>
+    <BaseHead title={project.title} description={project.description} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <HeroSection
+        title={project.title}
+        subtitle={`Project ID: ${project.id}`}
+      />
+      <section class="py-10">
+        <div class="mx-auto max-w-4xl px-4">
+          <p class="text-xl text-[color:var(--color-text-secondary)]">
+            {project.description}
+          </p>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

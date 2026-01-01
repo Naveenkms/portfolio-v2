@@ -22,7 +22,14 @@ const { title } = Astro.props as Props;
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
       {
         projects.map((p) => (
-          <article class="card-surface p-6 relative flex flex-col justify-between">
+          <article class="relative group">
+            <a
+              href={`/portfolio/${p.id}`}
+              class="absolute inset-0 z-0"
+              aria-label={`View project ${p.title}`}
+            >
+              <span class="sr-only">View project {p.title}</span>
+            </a>
             <div>
               <div
                 class="absolute right-4 top-4 text-[var(--accent)] [&>svg]:w-6 [&>svg]:h-6"
@@ -37,18 +44,6 @@ const { title } = Astro.props as Props;
               <p class="mt-3 text-[color:var(--color-text-secondary)]">
                 {p.description}
               </p>
-            </div>
-            <div class="mt-6 flex justify-center gap-2">
-              {p.cta.map((item) => (
-                <Button
-                  href={item.link}
-                  target="_blank"
-                  variant="primary"
-                  size="sm"
-                >
-                  {item.text}
-                </Button>
-              ))}
             </div>
           </article>
         ))

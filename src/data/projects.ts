@@ -2,6 +2,7 @@ import ReactIcon from "../assets/logos/React-logo.svg?raw";
 
 export const projects = [
   {
+    id: 1,
     title: "Receipt Upload & Expense Tracking System",
     techStack: "Next.js • TypeScript • PostgreSQL • Drizzle • Shadcn",
     description:
@@ -19,6 +20,7 @@ export const projects = [
     icon: ReactIcon,
   },
   {
+    id: 2,
     title: "Realtime Chat Service",
     techStack: "Next.js • WebSockets • Redis • Pusher • Tailwind CSS",
     description:
