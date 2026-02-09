@@ -1,49 +1,104 @@
 ---
 import Button from "../ui/button/Button.astro";
-import { projects } from "../../data/projects";
+import { getCollection } from "astro:content";
+import ReactIcon from "../../assets/logos/React-logo.svg?raw";
 
 interface Props {
   title?: string;
 }
 
 const { title } = Astro.props as Props;
+
+// Fetch all projects from the content collection
+const allProjects = await getCollection("projects");
+
+// Sort by order field (if present) or by title
+const projects = allProjects.sort((a, b) => {
+  const orderA = a.data.order ?? 999;
+  const orderB = b.data.order ?? 999;
+  return orderA - orderB;
+});
 ---
 
 <section class="w-full py-10">
   <div class="mx-auto max-w-6xl md:px-4">
     {
       title && (
-        <h2 class="text-3xl md:text-4xl font-semibold text-center mb-8 text-foreground">
+        <h2 class="text-3xl md:text-4xl font-semibold text-center mb-12 text-foreground">
           {title}
         </h2>
       )
     }
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+    <div
+      class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto px-4 md:px-0"
+    >
       {
         projects.map((p) => (
-          <article class="relative group">
+          <article class="project-card group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--card)] to-[var(--muted)] border border-[var(--border)] transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:border-[var(--accent)]">
             <a
               href={`/portfolio/${p.id}`}
-              class="absolute inset-0 z-0"
-              aria-label={`View project ${p.title}`}
+              class="absolute inset-0 z-10"
+              aria-label={`View project ${p.data.title}`}
             >
-              <span class="sr-only">View project {p.title}</span>
+              <span class="sr-only">View project {p.data.title}</span>
             </a>
-            <div>
-              <div
-                class="absolute right-4 top-4 text-[var(--accent)] [&>svg]:w-6 [&>svg]:h-6"
-                set:html={p.icon}
+
+            {/* Project Image */}
+            <div class="relative h-48 md:h-56 overflow-hidden bg-gradient-to-br from-[var(--accent)]/10 to-[var(--secondary)]/10">
+              <img
+                src={p.data.image}
+                alt={p.data.title}
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <h3 class="text-xl font-semibold text-foreground m-0">
-                {p.title}
+              {/* Gradient Overlay */}
+              <div class="absolute inset-0 bg-gradient-to-t from-[var(--card)] via-transparent to-transparent opacity-60" />
+
+              {/* Icon Badge */}
+              <div class="absolute top-4 right-4 bg-[var(--card)]/90 backdrop-blur-sm rounded-full p-3 shadow-lg border border-[var(--border)] transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">
+                <div
+                  class="text-[var(--accent)] [&>svg]:w-6 [&>svg]:h-6"
+                  set:html={p.data.icon || ReactIcon}
+                />
+              </div>
+            </div>
+
+            {/* Content */}
+            <div class="p-6 relative">
+              <h3 class="text-xl md:text-2xl font-bold text-foreground mb-2 transition-colors duration-300 group-hover:text-[var(--accent)]">
+                {p.data.title}
               </h3>
-              <p class="text-sm text-[color:var(--color-text-muted)] m-0">
-                {p.techStack}
+
+              <p class="text-sm text-[var(--muted-foreground)] mb-3 font-medium">
+                {p.data.techStack}
               </p>
-              <p class="mt-3 text-[color:var(--color-text-secondary)]">
-                {p.description}
+
+              <p class="text-[var(--color-text-secondary)] leading-relaxed line-clamp-3">
+                {p.data.description}
               </p>
+
+              {/* Hover Indicator */}
+              <div class="mt-4 flex items-center gap-2 text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span class="text-sm font-semibold">View Details</span>
+                <svg
+                  class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
+            </div>
+
+            {/* Animated Border Glow */}
+            <div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+              <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-[var(--accent)]/20 via-[var(--secondary)]/20 to-[var(--accent)]/20 blur-xl" />
             </div>
           </article>
         ))
@@ -51,3 +106,41 @@ const { title } = Astro.props as Props;
     </div>
   </div>
 </section>
+
+<style>
+  .project-card {
+    position: relative;
+  }
+
+  .project-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 1rem;
+    padding: 2px;
+    background: linear-gradient(
+      135deg,
+      var(--accent),
+      var(--secondary),
+      var(--accent)
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+
+  .project-card:hover::before {
+    opacity: 0.3;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
