@@ -3,34 +3,56 @@ import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/sections/Header.astro";
 import Footer from "../../components/sections/Footer.astro";
 import HeroSection from "../../components/sections/HeroSection.astro";
-import { projects } from "../../data/projects";
+import { getCollection, render } from "astro:content";
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
   return projects.map((project) => ({
-    params: { id: project.id.toString() },
+    params: { id: project.id },
     props: { project },
   }));
 }
 
 const { project } = Astro.props;
+const { Content } = await render(project);
 ---
 
 <html lang="en" data-theme="dark" class="dark">
   <head>
-    <BaseHead title={project.title} description={project.description} />
+    <BaseHead
+      title={project.data.title}
+      description={project.data.description}
+    />
   </head>
   <body>
     <Header />
     <main>
       <HeroSection
-        title={project.title}
-        subtitle={`Project ID: ${project.id}`}
+        title={project.data.title}
+        subtitle={project.data.techStack}
       />
       <section class="py-10">
         <div class="mx-auto max-w-4xl px-4">
-          <p class="text-xl text-[color:var(--color-text-secondary)]">
-            {project.description}
-          </p>
+          <div class="prose prose-invert max-w-none">
+            <Content />
+          </div>
+
+          {
+            project.data.cta && project.data.cta.length > 0 && (
+              <div class="mt-8 flex gap-4 flex-wrap">
+                {project.data.cta.map((link) => (
+                  <a
+                    href={link.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center px-6 py-3 bg-[var(--accent)] text-white rounded-lg hover:bg-[var(--accent)]/80 transition-colors font-semibold"
+                  >
+                    {link.text}
+                  </a>
+                ))}
+              </div>
+            )
+          }
         </div>
       </section>
     </main>
