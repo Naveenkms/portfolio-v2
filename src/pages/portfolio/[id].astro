@@ -2,8 +2,9 @@
 import BaseHead from "../../components/BaseHead.astro";
 import Header from "../../components/sections/Header.astro";
 import Footer from "../../components/sections/Footer.astro";
-import HeroSection from "../../components/sections/HeroSection.astro";
 import { getCollection, render } from "astro:content";
+import Button from "../../components/ui/button/Button.astro";
+import GlowLineSeparator from "../../components/ui/separator/GlowLineSeparator.astro";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -15,6 +16,9 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
+
+// Split tech stack string into tags
+const tags = project.data.techStack.split(/[•,]/).map((t) => t.trim());
 ---
 
 <html lang="en" data-theme="dark" class="dark">
@@ -24,38 +28,211 @@ const { Content } = await render(project);
       description={project.data.description}
     />
   </head>
-  <body>
+  <body class="bg-[var(--background)] text-foreground">
     <Header />
-    <main>
-      <HeroSection
-        title={project.data.title}
-        subtitle={project.data.techStack}
-      />
-      <section class="py-10">
-        <div class="mx-auto max-w-4xl px-4">
-          <div class="prose prose-invert max-w-none">
-            <Content />
-          </div>
 
-          {
-            project.data.cta && project.data.cta.length > 0 && (
-              <div class="mt-8 flex gap-4 flex-wrap">
-                {project.data.cta.map((link) => (
-                  <a
-                    href={link.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center px-6 py-3 bg-[var(--accent)] text-white rounded-lg hover:bg-[var(--accent)]/80 transition-colors font-semibold"
-                  >
-                    {link.text}
-                  </a>
-                ))}
+    <main class="use-utility-layout">
+      <!-- Back Button -->
+      <div class="mx-auto max-w-5xl px-4 pt-8">
+        <a
+          href="/#portfolio"
+          class="inline-flex items-center gap-2 text-[var(--accent)] hover:translate-x-[-4px] transition-transform duration-300 no-underline font-medium"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Back to Projects
+        </a>
+      </div>
+
+      <!-- Project Hero Section -->
+      <section class="w-full py-12 md:py-20 overflow-hidden relative">
+        <div class="mx-auto max-w-5xl px-4 relative z-10">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+              <h1
+                class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight"
+              >
+                <span
+                  class="bg-gradient-to-r from-[var(--accent)] up-to-[var(--accent-dark)] bg-clip-text text-transparent"
+                >
+                  {project.data.title}
+                </span>
+              </h1>
+
+              <div class="flex flex-wrap gap-2">
+                {
+                  tags.map((tag) => (
+                    <span class="sw-tag !px-3 !py-1 !text-sm border border-[var(--border)]">
+                      {tag}
+                    </span>
+                  ))
+                }
               </div>
-            )
-          }
+
+              <p
+                class="text-lg md:text-xl text-[var(--color-text-secondary)] leading-relaxed"
+              >
+                {project.data.description}
+              </p>
+
+              {
+                project.data.cta && project.data.cta.length > 0 && (
+                  <div class="flex flex-wrap gap-4 pt-4">
+                    {project.data.cta.map((link, index) => (
+                      <Button
+                        href={link.link}
+                        variant={index === 0 ? "primary" : "secondary"}
+                        target="_blank"
+                      >
+                        {link.text}
+                      </Button>
+                    ))}
+                  </div>
+                )
+              }
+            </div>
+
+            <!-- Project Visual -->
+            <div class="relative group">
+              <div
+                class="absolute -inset-4 bg-gradient-to-r from-[var(--accent)]/30 to-[var(--secondary)]/30 blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 rounded-3xl"
+              >
+              </div>
+              <div
+                class="relative card-surface overflow-hidden rounded-2xl border border-[var(--border)] shadow-2xl"
+              >
+                <img
+                  src={project.data.image}
+                  alt={project.data.title}
+                  class="w-full aspect-video object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decorative background elements -->
+        <div
+          class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-[500px] h-[500px] bg-[var(--accent)]/5 blur-[120px] rounded-full pointer-events-none"
+        >
+        </div>
+        <div
+          class="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-[var(--secondary)]/5 blur-[100px] rounded-full pointer-events-none"
+        >
+        </div>
+      </section>
+
+      <div class="mx-auto max-w-5xl px-4">
+        <GlowLineSeparator />
+      </div>
+
+      <!-- Content Section -->
+      <section class="py-16 md:py-24">
+        <div class="mx-auto max-w-4xl px-4">
+          <div class="relative">
+            <!-- Sidebar-like project details (visible on lg+) -->
+            <div
+              class="hidden lg:block absolute -left-48 top-0 w-40 space-y-8 sticky top-32 h-fit"
+            >
+              <div>
+                <h4
+                  class="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-3"
+                >
+                  Timeline
+                </h4>
+                <p class="text-sm font-medium">Completed</p>
+              </div>
+              <div>
+                <h4
+                  class="text-xs font-bold uppercase tracking-widest text-[var(--muted-foreground)] mb-3"
+                >
+                  Links
+                </h4>
+                <div class="flex flex-col gap-2">
+                  {
+                    project.data.cta?.map((link) => (
+                      <a
+                        href={link.link}
+                        target="_blank"
+                        class="text-sm text-[var(--accent)] hover:underline no-underline"
+                      >
+                        {link.text}
+                      </a>
+                    ))
+                  }
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="prose prose-invert max-w-none
+                prose-headings:text-foreground
+                prose-h2:text-3xl prose-h2:font-bold prose-h2:mt-12 prose-h2:mb-6
+                prose-h3:text-xl prose-h3:font-bold prose-h3:mt-8 prose-h3:mb-4
+                prose-p:text-lg prose-p:text-[var(--color-text-secondary)] prose-p:leading-relaxed
+                prose-li:text-[var(--color-text-secondary)]
+                prose-strong:text-foreground
+                prose-a:text-[var(--accent)] prose-a:no-underline hover:prose-a:underline
+                prose-img:rounded-2xl prose-img:shadow-xl prose-img:border prose-img:border-[var(--border)]"
+            >
+              <Content />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="mx-auto max-w-5xl px-4 py-8">
+        <GlowLineSeparator />
+      </div>
+
+      <!-- CTA Footer -->
+      <section class="py-20 text-center">
+        <div class="mx-auto max-w-3xl px-4">
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">
+            Interested in this project?
+          </h2>
+          <p class="text-[var(--color-text-secondary)] text-lg mb-10">
+            Let's discuss how I can help you with your next big idea.
+          </p>
+          <div class="flex justify-center gap-4">
+            <Button href="/#contact" variant="primary" size="lg"
+              >Get In Touch</Button
+            >
+            <Button href="/portfolio" variant="outline" size="lg"
+              >All Projects</Button
+            >
+          </div>
         </div>
       </section>
     </main>
+
     <Footer />
   </body>
 </html>
+
+<style>
+  /* Custom scrollbar for better look */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--background);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--surface-300);
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+  }
+</style>

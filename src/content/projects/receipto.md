@@ -1,6 +1,11 @@
 ---
 title: "Receipt Upload & Expense Tracking System"
-description: "A web application designed to manage and organize expenses from receipts. Users can upload receipt images, automatically extract expense details using OCR, and visualize their spending through a line chart over different time ranges. The app helps users view statistics of their spendings, and maintain a digital record of receipts, eliminating the need for manual entry and paper storage."
+description: >
+  A web application designed to manage and organize expenses from receipts. 
+  Users can upload receipt images, automatically extract expense details using OCR, 
+  and visualize their spending through a line chart over different time ranges. 
+  The app helps users view statistics of their spendings, and maintain a digital 
+  record of receipts, eliminating the need for manual entry and paper storage.
 techStack: "Next.js • TypeScript • PostgreSQL • Drizzle • Shadcn"
 image: "https://github.com/Naveenkms/my-portfolio/blob/main/assets/project-img/Screenshot%202025-08-22%20130501.png?raw=true"
 cta:
