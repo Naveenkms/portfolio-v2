@@ -18,6 +18,7 @@ export const projects = [
       },
     ],
     icon: ReactIcon,
+    image: "https://github.com/Naveenkms/my-portfolio/blob/main/assets/project-img/Screenshot%202025-08-22%20130501.png?raw=true",
   },
   {
     id: 2,
@@ -32,5 +33,6 @@ export const projects = [
       },
     ],
     icon: ReactIcon,
+    image: "https://images.unsplash.com/photo-1611606063065-ee7946f0787a?w=800&h=500&fit=crop",
   },
 ];

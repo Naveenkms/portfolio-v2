@@ -21,22 +21,23 @@ const blog = defineCollection({
 
 const projects = defineCollection({
   loader: glob({ base: "./src/content/projects", pattern: "**/*.{md,mdx}" }),
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    techStack: z.string(),
-    image: z.string(),
-    icon: z.string().optional(),
-    cta: z
-      .array(
-        z.object({
-          text: z.string(),
-          link: z.string(),
-        }),
-      )
-      .optional(),
-    order: z.number().optional(), // For sorting projects
-  }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      description: z.string(),
+      techStack: z.string(),
+      image: z.string(),
+      icon: image().optional(),
+      cta: z
+        .array(
+          z.object({
+            text: z.string(),
+            link: z.string(),
+          }),
+        )
+        .optional(),
+      order: z.number().optional(), // For sorting projects
+    }),
 });
 
 export const collections = { blog, projects };

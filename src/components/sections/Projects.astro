@@ -56,10 +56,18 @@ const projects = allProjects.sort((a, b) => {
 
               {/* Icon Badge */}
               <div class="absolute top-4 right-4 bg-[var(--card)]/90 backdrop-blur-sm rounded-full p-3 shadow-lg border border-[var(--border)] transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">
-                <div
-                  class="text-[var(--accent)] [&>svg]:w-6 [&>svg]:h-6"
-                  set:html={p.data.icon || ReactIcon}
-                />
+                <div class="text-[var(--accent)] [&_svg]:w-6 [&_svg]:h-6 [&_img]:w-6 [&_img]:h-6">
+                  {p.data.icon && typeof p.data.icon !== "string" ? (
+                    <img
+                      src={p.data.icon.src}
+                      alt=""
+                      class="w-6 h-6"
+                      loading="eager"
+                    />
+                  ) : (
+                    <Fragment set:html={p.data.icon || ReactIcon} />
+                  )}
+                </div>
               </div>
             </div>
 
