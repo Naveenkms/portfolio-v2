@@ -42,7 +42,7 @@ The implementation is based on Figma design files provided via a Dev Handoff Pag
 
 ### **5. Timeline**
 
-The project was completed within a strict 5-day timeframe from the assignment date.
+The project was completed within a 4-day timeframe from the assignment date.
 
 ### **6. Important Notes**
 
@@ -63,15 +63,7 @@ The project was completed within a strict 5-day timeframe from the assignment da
 - The code is well-organized, easy to navigate, and follows a logical structure.
 - Reusable components are used to avoid duplication and adhere to DRY (Don't Repeat Yourself) principles.
 - Code is clean, well-documented, and uses meaningful variable names.
-- Focus was placed on efficient rendering, minimal DOM manipulation, proper state management, lazy loading, and reducing unnecessary re-renders.
 - Accessibility standards (ARIA roles, keyboard navigation, focus states) were followed.
-
-### **3. Motion and Microinteractions**
-
-- Animations and microinteractions add value to the user experience without being distracting.
-- All animations are smooth with no lag or jank, optimized to prevent frame drops.
-- Microinteractions enhance usability (e.g., hover effects, button states, loading animations), providing a intuitive and delightful experience.
-- Motion design is consistent with the overall design language and brand identity.
 
 ### **4. Functionality**
 
@@ -82,11 +74,6 @@ The project was completed within a strict 5-day timeframe from the assignment da
 - Clear documentation is provided for code components, functions, and modules.
 - Instructions for setting up and running the project locally are included.
 - The application is deployed and accessible via a working demo link.
-
-### **6. Advanced Features**
-
-- Usage of advanced state management techniques where appropriate.
-- Inclusion of unit tests, integration tests, or end-to-end tests to ensure reliability.
 
 ## **Technologies Used**
 
