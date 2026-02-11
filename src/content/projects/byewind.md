@@ -14,7 +14,7 @@ cta:
     link: "https://github.com/Naveenkms/bye-wind"
   - text: "Live Demo →"
     link: "https://bye-wind-two.vercel.app/"
-order: 2
+order: 1
 icon: "../../assets/logos/Next.js-logo.svg"
 ---
 

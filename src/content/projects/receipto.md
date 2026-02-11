@@ -13,7 +13,7 @@ cta:
     link: "https://github.com/Naveenkms/receipto"
   - text: "Live Demo →"
     link: "https://receipto-azure.vercel.app"
-order: 1
+order: 3
 icon: "../../assets/logos/Next.js-logo.svg"
 ---
 
