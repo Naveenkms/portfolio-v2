@@ -1,0 +1,147 @@
+---
+interface Props {
+  title?: string;
+  username?: string;
+}
+
+const { title = "Recent GitHub Commits", username = "Naveenkms" } =
+  Astro.props as Props;
+---
+
+<section class="w-full py-10">
+  <div class="mx-auto max-w-6xl md:px-4">
+    {
+      title && (
+        <h2 class="text-3xl md:text-4xl font-semibold text-center mb-12 text-foreground">
+          {title}
+        </h2>
+      )
+    }
+
+    <div
+      id="github-commits-container"
+      data-username={username}
+      class="flex flex-col border border-[var(--border)] rounded-xl overflow-hidden max-w-5xl mx-auto bg-[var(--card)]/40 backdrop-blur-sm shadow-sm"
+    >
+      <!-- Skeletons while loading -->
+      <div
+        class="animate-pulse h-20 border-b border-[var(--border)] bg-[var(--card)]/50"
+      >
+      </div>
+      <div
+        class="animate-pulse h-20 border-b border-[var(--border)] bg-[var(--card)]/50"
+      >
+      </div>
+      <div
+        class="animate-pulse h-20 border-b border-[var(--border)] bg-[var(--card)]/50"
+      >
+      </div>
+      <div class="animate-pulse h-20 bg-[var(--card)]/50"></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // @ts-nocheck
+  function timeAgo(dateString) {
+    const date = new Date(dateString);
+    const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+    let interval = seconds / 31536000;
+    if (interval > 1) return Math.floor(interval) + " years ago";
+    interval = seconds / 2592000;
+    if (interval > 1) return Math.floor(interval) + " months ago";
+    interval = seconds / 86400;
+    if (interval > 1) return Math.floor(interval) + " days ago";
+    interval = seconds / 3600;
+    if (interval > 1) return Math.floor(interval) + " hours ago";
+    interval = seconds / 60;
+    if (interval > 1) return Math.floor(interval) + " minutes ago";
+    return Math.floor(seconds) + " seconds ago";
+  }
+
+  async function fetchCommits() {
+    const container = document.getElementById("github-commits-container");
+    if (!container) return;
+
+    const username = container.dataset.username;
+    if (!username) return;
+
+    try {
+      const response = await fetch(
+        `https://api.github.com/search/commits?q=author:${username}&sort=author-date&order=desc&per_page=4`,
+        {
+          headers: {
+            Accept: "application/vnd.github+json",
+          },
+        },
+      );
+      if (!response.ok) throw new Error("Failed to fetch");
+      const data = await response.json();
+
+      const uniqueCommits = (data.items || []).map((item) => ({
+        sha: item.sha,
+        message: item.commit.message,
+        repo: item.repository.full_name,
+        date: item.commit.author.date,
+        actorAvatar:
+          item.author?.avatar_url ||
+          `https://avatars.githubusercontent.com/${username}`,
+        actorName: item.author?.login || item.commit.author.name,
+        url: item.html_url,
+      }));
+
+      if (uniqueCommits.length === 0) {
+        container.innerHTML = `<p class="text-center col-span-full text-[var(--muted-foreground)]">No recent commits found for ${username}.</p>`;
+        return;
+      }
+
+      container.innerHTML = uniqueCommits
+        .map(
+          (commit) => `
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 border-b border-[var(--border)] last:border-0 hover:bg-[var(--muted)]/40 transition-colors">
+          <div class="flex flex-col gap-1 min-w-0 flex-1">
+            <div class="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)]">
+              <svg class="w-3.5 h-3.5 text-[var(--foreground)]" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z"/></svg>
+              <a href="https://github.com/${commit.repo}" target="_blank" rel="noopener noreferrer" class="font-medium hover:text-[var(--accent)] hover:underline transition-colors">
+                ${commit.repo}
+              </a>
+            </div>
+            
+            <a href="${commit.url}" target="_blank" rel="noopener noreferrer" class="text-[15px] font-semibold text-[var(--foreground)] hover:text-[var(--accent)] transition-colors truncate block">
+              ${commit.message.split("\n")[0]}
+            </a>
+            
+            <div class="flex items-center gap-1.5 text-xs text-[var(--muted-foreground)] mt-0.5">
+              <div class="flex items-center gap-1.5 font-medium text-foreground">
+                <img src="${commit.actorAvatar}" alt="${commit.actorName}" class="w-5 h-5 rounded-full border border-[var(--border)]" />
+                ${commit.actorName}
+              </div>
+              <span>committed ${timeAgo(commit.date)}</span>
+            </div>
+          </div>
+          
+          <div class="flex flex-row items-center gap-3 mt-3 sm:mt-0 shrink-0">
+            <div class="flex items-center rounded-md border border-[var(--border)] bg-[var(--background)] shadow-sm">
+              <a href="${commit.url}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 px-3 py-1.5 text-[13px] font-mono text-[var(--accent)] hover:bg-[var(--muted)] transition-colors border-r border-[var(--border)]">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 16 16" fill="currentColor"><path d="M11.93 8.5a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5h-3.32Zm-1.43-.75a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg>
+                ${commit.sha.substring(0, 7)}
+              </a>
+              <a href="https://github.com/${commit.repo}/tree/${commit.sha}" title="Browse the repository at this point in the history" target="_blank" rel="noopener noreferrer" class="px-2 py-1.5 hover:bg-[var(--muted)] text-[var(--muted-foreground)] hover:text-foreground transition-colors">
+                <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L2.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25Zm6.56 0a.75.75 0 1 0-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 1 0 1.06 1.06l4.25-4.25a.75.75 0 0 0 0-1.06l-4.25-4.25Z"></path></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      `,
+        )
+        .join("");
+    } catch (error) {
+      console.error(error);
+      container.innerHTML =
+        '<p class="text-center col-span-full text-red-500 py-6">Failed to load GitHub commits.</p>';
+    }
+  }
+
+  // Use Astro's run script semantics: It's good to just call it.
+  fetchCommits();
+</script>

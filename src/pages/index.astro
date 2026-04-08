@@ -15,6 +15,7 @@ import GlowLineSeparator from "../components/ui/separator/GlowLineSeparator.astr
 
 import Projects from "@/components/sections/Projects.astro";
 import AboutSection from "@/components/sections/AboutSection.astro";
+import GithubCommits from "@/components/sections/GithubCommits.astro";
 ---
 
 <!doctype html>
@@ -54,9 +55,11 @@ import AboutSection from "@/components/sections/AboutSection.astro";
         <ArrowSeparator />
         <AboutSection />
         <ArrowSeparator />
-        <WorkExperience title="Work Experience" items={work} />
-        <ArrowSeparator />
         <Projects title="Projects" />
+        <ArrowSeparator />
+        <GithubCommits title="Recent GitHub Commits" username="Naveenkms" />
+        <ArrowSeparator />
+        <WorkExperience title="Work Experience" items={work} />
         <ArrowSeparator />
         <Studies title="Studies" items={studies} />
         <GlowLineSeparator />
